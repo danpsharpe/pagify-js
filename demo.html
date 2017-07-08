@@ -1,0 +1,169 @@
+<html>
+<head>
+    <title>Auto Paginate Content With Repeating Header / Footer</title>
+    <style>
+        body {
+            background: #545454;
+            font: 12px Arial;
+            line-height: 20px;
+        }
+
+        .page {
+            background: white;
+            box-shadow: 0 0 10px #000;
+            margin: 10px;
+        }
+
+        .page-header, .page-content {
+            text-align: center;
+            background: #ddd;
+        }
+
+        .page-content {
+            background: #fff;
+        }
+
+        .page-footer {
+            background: #efe;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script>
+
+        var pagify = {
+            pageHeight: 500,
+            init: function () {
+                this.getHeader();
+                this.getContent();
+                this.getFooter();
+                this.setPageContentHeight();
+                this.pagifyContent();
+            },
+            getHeader: function () {
+                var height = 0;
+                var html = '';
+                $('.page-header').each(function () {
+                    height += parseInt($(this).outerHeight(true));
+                    html += $(this).wrap('<div class="temp-element"/>').parent().html();
+                    $('div.temp-element').remove();
+                });
+                this.headerHeight = height;
+                this.headerHTML = html;
+            },
+            getContent: function () {
+                var elements = [];
+                $('.page-content').each(function () {
+                    elements.push({
+                        height: parseInt($(this).outerHeight(true)),
+                        html: $(this).wrap('<div class="temp-element"/>').parent().html()
+                    });
+                    $('div.temp-element').remove();
+                });
+                this.contentElements = elements;
+            },
+            getFooter: function () {
+                var height = 0;
+                var html = '';
+                $('.page-footer').each(function () {
+                    height += parseInt($(this).outerHeight(true));
+                    html += $(this).wrap('<div class="temp-element"/>').parent().html();
+                    $('div.temp-element').remove();
+                });
+                this.footerHeight = height;
+                this.footerHTML = html;
+            },
+            setPageContentHeight: function () {
+                this.pageContentHeight = (this.pageHeight - this.footerHeight);
+            },
+            pagifyContent: function () {
+                var headerHeight = this.headerHeight;
+                var headerHTML = this.headerHTML;
+                var footerHeight = this.footerHeight;
+                var footerHTML = this.footerHTML;
+                var pageContentHeight = this.pageContentHeight;
+                var currentPageContentHeight = headerHeight;
+                var lastPage = false;
+                var currentPage = 1;
+                var html = '';
+                $(this.contentElements).each(function (index) {
+                    currentPageContentHeight += this.height;
+                    lastPage = false;
+
+                    if (index == 0) {
+                        // Create first page.
+                        html += '<div id="page-' + currentPage + '" class="page"><div class="page-content-zone" style="height: ' + pageContentHeight + 'px">';
+                        html += headerHTML;
+                    } else if (currentPageContentHeight > pageContentHeight) {
+                        // Create a new page.
+                        currentPage++;
+                        html += '</div>';
+                        html += footerHTML;
+                        html += '</div>';
+                        html += '<div id="page-' + currentPage + '" class="page"><div class="page-content-zone" style="height: ' + pageContentHeight + 'px">';
+                        html += headerHTML;
+                        currentPageContentHeight = headerHeight + this.height;
+                        lastPage = true;
+                    }
+
+                    // Add this content element.
+                    html += this.html;
+                });
+                if (!lastPage) {
+                    html += '</div>';
+                    html += footerHTML;
+                    html += '</div>';
+                }
+                $('body').append(html);
+
+                var thisPage = 0;
+                $('.page').each(function () {
+                    thisPage++;
+                    $(this).find('.current-page').text(thisPage);
+                });
+                $('.total-pages').text(thisPage);
+            }
+        };
+
+        $(function () {
+            pagify.init();
+        });
+    </script>
+</head>
+<body>
+<div class="page-header">
+    LOGO 30px
+    <div style="height: 10px;"></div>
+</div>
+
+<div class="page-content">Page Content 140px
+    <span class="current-page">x</span> of <span class="total-pages">x</span>
+    <div style="height: 120px;"></div>
+</div>
+<div class="page-content">Page Content 100px
+    <div style="height: 80px;"></div>
+</div>
+<div class="page-content">Page Content 40px
+    <div style="height: 20px;"></div>
+</div>
+<div class="page-content">Page Content 220px
+    <span class="current-page">x</span> of <span class="total-pages">x</span>
+    <div style="height: 200px;"></div>
+</div>
+<div class="page-content">Page Content 120px
+    <div style="height: 100px;"></div>
+</div>
+<div class="page-content">Page Content 70px
+    <div style="height: 50px;"></div>
+</div>
+<div class="page-content">Page Content 90px
+    <div style="height: 70px;"></div>
+</div>
+<div class="page-content">Page Content 100px
+    <div style="height: 80px;"></div>
+</div>
+
+<div class="page-footer"><span class="current-page">x</span> of <span class="total-pages">x</span></div>
+</body>
+</html>

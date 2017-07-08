@@ -3,6 +3,34 @@ Logic for converting an HTML document into a PDF'd paginated printable format
 
 This script is a use case for converting ordinary html that has been broken up into header, content and footer segments, and automatically creates pages based on that data.
 
+## Usage
+
+```
+// Include Jquery and pagifJS.
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="pagifyjs-1.0.1.min.js"></script>
+
+<script>
+    $(function () {
+        pagifyJS.init({
+            pageHeight: <page height in pixels>
+        });
+    });
+</script>
+```
+##### Within the BODY of your document, add content with:
+```
+.page-header - one or many elements that repeat on every page.
+.page-content - chunked content that spans one or many pages. each block should be relatively small.
+.page-footer - one or many elements that repeat on every page.
+```
+
+##### Helper classes: All of these class elements are automatically populated
+```
+.pagify-current-page - the current document page
+.pagify-total-pages - the total pages in the docment.
+```
+
 ## Example Input
 
 ```

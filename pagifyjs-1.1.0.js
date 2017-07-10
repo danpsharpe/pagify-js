@@ -16,7 +16,7 @@ var pagifyJS = {
     getHeader: function () {
         var height = 0;
         var html = '';
-        $('.page-header').each(function () {
+        $('body > div.pagify-header').each(function () {
             height += parseInt($(this).outerHeight(true));
             html += $(this).wrap('<div class="temp-element"/>').parent().html();
             $('div.temp-element').remove();
@@ -27,7 +27,7 @@ var pagifyJS = {
     getFooter: function () {
         var height = 0;
         var html = '';
-        $('.page-footer').each(function () {
+        $('body > div.pagify-footer').each(function () {
             height += parseInt($(this).outerHeight(true));
             html += $(this).wrap('<div class="temp-element"/>').parent().html();
             $('div.temp-element').remove();
@@ -37,7 +37,8 @@ var pagifyJS = {
     },
     getContent: function () {
         var elements = [];
-        $('.page-content').each(function () {
+        $('body > *:not(.pagify-header):not(.pagify-footer)').each(function () {
+            console.log('derr');
             elements.push({
                 height: parseInt($(this).outerHeight(true)),
                 html: $(this).wrap('<div class="temp-element"/>').parent().html()
@@ -62,7 +63,7 @@ var pagifyJS = {
 
             if (index == 0) {
                 // Create first page.
-                html += '<div id="page-' + currentPage + '" class="page"><div style="height: ' + contentHeight + 'px">';
+                html += '<div id="pagify-page-' + currentPage + '" class="pagify-page"><div style="height: ' + contentHeight + 'px">';
                 html += headerHTML;
             } else if (currentContentHeight > contentHeight) {
                 // Create a new page.
@@ -70,7 +71,7 @@ var pagifyJS = {
                 html += '</div>';
                 html += footerHTML;
                 html += '</div>';
-                html += '<div id="page-' + currentPage + '" class="page"><div style="height: ' + contentHeight + 'px">';
+                html += '<div id="pagify-page-' + currentPage + '" class="pagify-page"><div style="height: ' + contentHeight + 'px">';
                 html += headerHTML;
                 currentContentHeight = headerHeight + this.height;
             }
@@ -86,7 +87,7 @@ var pagifyJS = {
         $('body').append(html);
 
         var thisPage = 0;
-        $('.page').each(function () {
+        $('body > div.pagify-page').each(function () {
             thisPage++;
             $(this).find('.pagify-current-page').text(thisPage);
         });

@@ -38,8 +38,9 @@ var pagifyJS = {
     },
     getContent: function () {
         var elements = [];
-        $('body > *:not(.pagify-header):not(.pagify-footer)').each(function () {
-            console.log('derr');
+        $('body > div:not(.pagify-header):not(.pagify-footer)').each(function () {
+            var height = parseInt($(this).outerHeight(true));
+            height = $(this).outerHeight(true);
             elements.push({
                 height: parseInt($(this).outerHeight(true)),
                 html: $(this).wrap('<div class="temp-element"/>').parent().html()

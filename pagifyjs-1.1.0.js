@@ -6,8 +6,9 @@
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 var pagifyJS = {
-    init: function ( props ) {
-        this.pageHeight = props.pageHeight;
+    init: function (props) {
+        this.pageHeight = props.pageHeight ? props.pageHeight : '1000';
+        this.heightCalculator = props.heightCalculator ? props.heightCalculator : 'oh';
         this.getHeader();
         this.getFooter();
         this.getContent();
@@ -16,9 +17,14 @@ var pagifyJS = {
     },
     getHeader: function () {
         var height = 0;
+        var heightCalculator = this.heightCalculator;
         var html = '';
         $('body > div.pagify-header').each(function () {
-            height += parseInt($(this).outerHeight(true));
+            if (heightCalculator == 'oh') {
+                height += parseInt($(this).outerHeight(true));
+            } else {
+                height += parseInt(this.clientHeight);
+            }
             html += $(this).wrap('<div class="temp-element"/>').parent().html();
             $('div.temp-element').remove();
         });
@@ -27,9 +33,14 @@ var pagifyJS = {
     },
     getFooter: function () {
         var height = 0;
+        var heightCalculator = this.heightCalculator;
         var html = '';
         $('body > div.pagify-footer').each(function () {
-            height += parseInt($(this).outerHeight(true));
+            if (heightCalculator == 'oh') {
+                height += parseInt($(this).outerHeight(true));
+            } else {
+                height += parseInt(this.clientHeight);
+            }
             html += $(this).wrap('<div class="temp-element"/>').parent().html();
             $('div.temp-element').remove();
         });
@@ -38,11 +49,22 @@ var pagifyJS = {
     },
     getContent: function () {
         var elements = [];
+        var height = 0;
+        var heightCalculator = this.heightCalculator;
         $('body > div:not(.pagify-header):not(.pagify-footer)').each(function () {
-            var height = parseInt($(this).outerHeight(true));
-            height = $(this).outerHeight(true);
+
+            $('.hide-from-pagify-compiler').hide();
+
+            if (heightCalculator == 'oh') {
+                height = parseInt($(this).outerHeight(true));
+            } else {
+                height = parseInt(this.clientHeight);
+            }
+
+            $('.hide-from-pagify-compiler').show();
+
             elements.push({
-                height: parseInt($(this).outerHeight(true)),
+                height: parseInt(height),
                 html: $(this).wrap('<div class="temp-element"/>').parent().html()
             });
             $('div.temp-element').remove();
@@ -64,11 +86,9 @@ var pagifyJS = {
             currentContentHeight += this.height;
 
             if (index == 0) {
-                // Create first page.
                 html += '<div id="pagify-page-' + currentPage + '" class="pagify-page"><div style="height: ' + contentHeight + 'px">';
                 html += headerHTML;
             } else if (currentContentHeight > contentHeight) {
-                // Create a new page.
                 currentPage++;
                 html += '</div>';
                 html += footerHTML;
@@ -77,8 +97,6 @@ var pagifyJS = {
                 html += headerHTML;
                 currentContentHeight = headerHeight + this.height;
             }
-
-            // Add this content element.
             html += this.html;
         });
 

@@ -9,6 +9,7 @@ var pagifyJS = {
     init: function (props) {
         this.pageHeight = props.pageHeight ? props.pageHeight : '1000';
         this.heightCalculator = props.heightCalculator ? props.heightCalculator : 'oh';
+        this.wkhtmltopdf = props.wkhtmltopdf ? props.wkhtmltopdf : false;
         this.getHeader();
         this.getFooter();
         this.getContent();
@@ -53,7 +54,10 @@ var pagifyJS = {
         var heightCalculator = this.heightCalculator;
         $('body > div:not(.pagify-header):not(.pagify-footer)').each(function () {
 
-            $('.hide-from-pagify-compiler').hide();
+            if (this.wkhtmltopdf) {
+                $('*').css('font-size', '2px');
+                $('.hide-from-compiler').hide();
+            }
 
             if (heightCalculator == 'oh') {
                 height = parseInt($(this).outerHeight(true));
@@ -61,7 +65,10 @@ var pagifyJS = {
                 height = parseInt(this.clientHeight);
             }
 
-            $('.hide-from-pagify-compiler').show();
+            if (this.wkhtmltopdf) {
+                $('*').css('font-size', '11px');
+                $('.hide-from-compiler').show();
+            }
 
             elements.push({
                 height: parseInt(height),

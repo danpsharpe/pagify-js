@@ -13,21 +13,22 @@ The usage pattern is very simple and minimal. Simply include the JS library, ini
 <script>
     $(function () {
         pagifyJS.init({
-            pageHeight: <page height in pixels>
+            pageHeight: 500
         });
     });
 </script>
 ```
 ##### Within the BODY of your document, add content with:
 ```
-.pagify-header - one or many elements that repeat on every page.
-.pagify-footer - one or many elements that repeat on every page.
+.pagify-header - One or many elements that repeat on every page.
+.pagify-footer - One or many elements that repeat on every page.
 ```
 
 ##### Helper classes: All of these class elements are automatically populated
 ```
-.pagify-current-page - the current document page
-.pagify-total-pages - the total pages in the docment.
+.pagify-current-page     - The current document page.
+.pagify-total-pages      - The total pages in the document.
+.pagify-force-page-break - Force a new page.
 ```
 
 ## Example Input

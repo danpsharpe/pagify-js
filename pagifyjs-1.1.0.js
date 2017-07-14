@@ -72,6 +72,7 @@ var pagifyJS = {
 
             elements.push({
                 height: parseInt(height),
+                pageBreak: $(this).hasClass('pagify-force-page-break') ? true : false,
                 html: $(this).wrap('<div class="temp-element"/>').parent().html()
             });
             $('div.temp-element').remove();
@@ -95,7 +96,7 @@ var pagifyJS = {
             if (index == 0) {
                 html += '<div id="pagify-page-' + currentPage + '" class="pagify-page"><div style="height: ' + contentHeight + 'px">';
                 html += headerHTML;
-            } else if (currentContentHeight > contentHeight) {
+            } else if (currentContentHeight > contentHeight || this.pageBreak) {
                 currentPage++;
                 html += '</div>';
                 html += footerHTML;
